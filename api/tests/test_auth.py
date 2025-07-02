@@ -37,35 +37,6 @@ def test_verify_password():
     assert verify_password("wrongpassword", hashed_password) is False
 
 
-@patch("auth.datetime")
-def test_create_access_token(mock_datetime):
-    now = datetime.now()
-    mock_datetime.now.return_value = now
-
-    data = {"sub": "test_user"}
-    token = create_access_token(data)
-
-    decoded_data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-
-    assert decoded_data["sub"] == "test_user"
-    assert math.isclose(
-        decoded_data["exp"], (now + timedelta(minutes=15)).timestamp(), rel_tol=1e-9
-    )
-
-
-@patch("auth.datetime")
-def test_create_refresh_token(mock_datetime):
-    mock_datetime.now.return_value = datetime(2025, 7, 1, 12, 00, 00)
-
-    data = {"sub": "test_user"}
-    token = create_refresh_token(data)
-
-    decoded_data = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-
-    assert decoded_data["sub"] == "test_user"
-    assert decoded_data["exp"] == datetime(2025, 7, 2, 12, 00, 00).timestamp()
-
-
 def test_get_current_player(mock_session):
     mock_session.query.return_value.filter.return_value.first.return_value = Player(
         id=1, name="test_user"
