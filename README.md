@@ -15,8 +15,9 @@ This project integrates both the backend and frontend for the Rock Paper Scissor
 
 1. **Clone the Repository**:
 ```bash
-git clone <repository_url>
-cd <repository_name>
+git clone https://github.com/jovan-stankovic/rpsls_game.git
+cd rpsls_game
+mv .env.example .env
 docker-compose up
 ```
 ## Access the Game:
