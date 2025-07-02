@@ -1,0 +1,46 @@
+version: '3.8'
+
+services:
+  test:
+    build:
+      context: .
+      dockerfile: ./infra/api/Dockerfile
+    command: [ "./run_tests.sh" ]
+    depends_on:
+      - db
+    env_file:
+      - infra/api/.env
+
+  api:
+    build:
+      context: .
+      dockerfile: ./infra/api/Dockerfile
+    command: [ "./entrypoint.sh" ]
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    env_file:
+      - infra/api/.env
+
+  db:
+    image: postgres:latest
+    restart: always
+    env_file:
+      - ./infra/api/.env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  ui:
+    build:
+      context: .
+      dockerfile: ./infra/ui/Dockerfile
+    ports:
+      - "5000:5000"
+    depends_on:
+      - api
+
+volumes:
+  postgres_data:
